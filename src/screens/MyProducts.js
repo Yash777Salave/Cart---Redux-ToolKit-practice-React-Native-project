@@ -6,47 +6,64 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {products} from '../componant/Products';
+import {useDispatch, useSelector} from 'react-redux';
+import {addProducts} from '../redux/slice/AddProductSlice';
+
 const MyProducts = () => {
+  const dispatch = useDispatch();
+  const storeProducts = useSelector(state => state.products);
+
+  useEffect(() => {
+    products.map(item => {
+      if (storeProducts== 0) {
+        dispatch(addProducts(item));
+      }
+    });
+  }, []);
+  console.log('All products-----------', storeProducts);
   return (
     <View style={styles.MainContainer}>
       <FlatList
-        data={products}
-        renderItem={({item, index}) => (
-          <View style={styles.ProductCardContainer}>
-            <View>
-              <Image source={{uri: item.image}} style={styles.Images} />
-            </View>
-            <View style={{padding: 10}}>
-              <Text style={styles.productTXT}>
-                {item.name.substring(0, 25) + '...'}
-              </Text>
-              <Text style={styles.brandTXT}>{item.brand}</Text>
-              <Text style={[styles.brandTXT, {color: 'green', fontSize: 16}]}>
-                {'₹' + item.price}
-              </Text>
-              <View style={styles.MainPlusMinusCart}>
-                <View>
-                  <TouchableOpacity style={styles.cartButton}>
-                    <Text style={styles.cartButtonTXT}>Add To Cart</Text>
-                  </TouchableOpacity>
-                </View>
-                {item.qty > 0 && (
-                  <View style={{flexDirection: 'row'}}>
+        keyExtractor={(item, index) => index.toString()}
+        data={storeProducts}
+        renderItem={({item, index}) =>
+          item ? (
+            <View style={styles.ProductCardContainer}>
+              <View>
+                <Image source={{uri: item.image}} style={styles.Images} />
+              </View>
+              <View style={{padding: 10}}>
+                <Text style={styles.productTXT}>
+                  {item.name.substring(0, 24) + '...'}
+                </Text>
+                <Text style={styles.brandTXT}>{item.brand}</Text>
+                <Text style={[styles.brandTXT, {color: 'green', fontSize: 16}]}>
+                  {'₹' + item.price}
+                </Text>
+                <View style={styles.MainPlusMinusCart}>
+                  <View>
                     <TouchableOpacity style={styles.cartButton}>
-                      <Text style={[styles.cartButtonTXT]}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.qty}>{'0'}</Text>
-                    <TouchableOpacity style={styles.cartButton}>
-                      <Text style={styles.cartButtonTXT}>+</Text>
+                      <Text style={styles.cartButtonTXT}>Add To Cart</Text>
                     </TouchableOpacity>
                   </View>
-                )}
+                  {item.qty > 0 && (
+                    <View style={{flexDirection: 'row'}}>
+                      <TouchableOpacity style={styles.cartButton}>
+                        <Text style={[styles.cartButtonTXT]}>-</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.qty}>{'0'}</Text>
+                      <TouchableOpacity style={styles.cartButton}>
+                        <Text style={styles.cartButtonTXT}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
               </View>
             </View>
-          </View>
-        )}
+          ) : null
+        }
       />
     </View>
   );

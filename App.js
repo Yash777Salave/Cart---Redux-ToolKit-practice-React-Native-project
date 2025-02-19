@@ -1,9 +1,14 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
-import MyProducts from './src/screens/MyProducts';
-
+import StackNavigation from './src/navigation/StackNavigation';
+import {Provider} from 'react-redux';
+import {store} from './src/redux/store/Store';
 const App = () => {
-  return <MyProducts />;
+  return (
+    <Provider store={store}>
+      <StackNavigation />
+    </Provider>
+  );
 };
 
 export default App;
